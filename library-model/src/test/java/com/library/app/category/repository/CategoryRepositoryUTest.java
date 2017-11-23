@@ -99,6 +99,16 @@ public class CategoryRepositoryUTest {
 		assertThat(String.format("Element at %1$d is called %2$s ", 2, java().getName()), categories.get(2).getName(), is(equalTo(java().getName())));
 		assertThat(String.format("Element at %1$d is called %2$s ", 3, networks().getName()), categories.get(3).getName(), is(equalTo(networks().getName())));
 	}
+	
+	@Test
+	public void alreadyExistsForAdd() {
+		
+		dBCommandTransactionalExecutor.executeCommand(()-> categoryRepository.add(java()));
+
+		assertThat("Java should exists", categoryRepository.alreadyExists(java()), is(equalTo(true)));
+		assertThat("CleanCode should exists", categoryRepository.alreadyExists(cleanCode()), is(equalTo(false)));
+		
+	}
 
 	@After
 	public void closeEntityManager() {
