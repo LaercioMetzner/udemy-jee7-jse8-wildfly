@@ -39,15 +39,22 @@ public class CategoryRepository {
 		if (category.getId() != null) {
 			jpql.append(" And  e.id != :id");
 		}
+		
 		final Query query = em.createQuery(jpql.toString());
 		query.setParameter("name", category.getName());
 		if (category.getId() != null) {
 			query.setParameter("id", category.getId());
 		}
-		int toCheck = query.setMaxResults(1).getResultList().size();
-		boolean toReturn = toCheck > 0; 
-		return toReturn;
 		
+		int toCheck = query.setMaxResults(1).getResultList().size();
+		boolean toReturn = toCheck > 0;
+		return toReturn;
+
+	}
+
+	public boolean existsById(Long categoryAddedId) {
+		return em.createQuery("Select 1 From Category e Where e.id = :id").setParameter("id", categoryAddedId)
+				.setMaxResults(1).getResultList().size() > 0;
 	}
 
 }

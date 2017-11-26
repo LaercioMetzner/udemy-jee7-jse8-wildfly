@@ -136,6 +136,18 @@ public class CategoryRepositoryUTest {
 
 	}
 
+	@Test
+	public void exitstById() {
+
+		final Long categoryAddedId = dBCommandTransactionalExecutor
+				.executeCommand(() -> categoryRepository.add(java()).getId());
+
+		assertThat("Just added category should exists", categoryRepository.existsById(categoryAddedId),
+				is(equalTo(true)));
+		assertThat("category with id 999 should not exists", categoryRepository.existsById(999L), is(equalTo(false)));
+
+	}
+
 	@After
 	public void closeEntityManager() {
 		em.close();
