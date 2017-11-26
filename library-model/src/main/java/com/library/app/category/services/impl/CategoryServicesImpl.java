@@ -28,7 +28,7 @@ public class CategoryServicesImpl implements CategoryServices{
 			throw new CategoryExistentException();
 		}
 		
-		return null;
+		return categoryRepository.add(category);
 	}
 
 }

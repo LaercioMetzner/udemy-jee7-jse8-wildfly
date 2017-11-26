@@ -56,6 +56,17 @@ public class CategoryServicesUTest {
 		categoryServices.add(java());
 	}
 	
+	@Test()
+	public void addValidCategory() {
+		
+		when(categoryRepository.alreadyExists(java())).thenReturn(false);
+		categoryServices.add(java());
+		when(categoryRepository.add(java())).thenReturn(categoryWithId(java(), 1L));
+		
+		Category categoryAdded = categoryServices.add(java());
+		assertThat("Category should have the id of 1l", categoryAdded.getId(), is(equalTo(1L)));
+	}
+	
 	public void addCategoryWithInvalidName(String name) {
 		try {
 			categoryServices.add(new Category(name));
