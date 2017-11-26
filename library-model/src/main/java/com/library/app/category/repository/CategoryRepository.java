@@ -32,7 +32,7 @@ public class CategoryRepository {
 		return em.createQuery(String.format("Select e From Category e Order by %s", orderField)).getResultList();
 	}
 
-	public Object alreadyExists(Category category) {
+	public boolean alreadyExists(Category category) {
 
 		final StringBuffer jpql = new StringBuffer();
 		jpql.append("Select 1 From Category e Where e.name = :name");
