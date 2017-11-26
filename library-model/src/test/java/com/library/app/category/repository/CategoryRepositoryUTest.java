@@ -89,25 +89,51 @@ public class CategoryRepositoryUTest {
 			allCategories().stream().forEach(categoryRepository::add);
 			return null;
 		});
-		
+
 		final List<Category> categories = categoryRepository.findAll("name");
-		
+
 		assertThat("List is null", categories, is(notNullValue()));
 		assertThat("List should have a length of four", categories.size(), is(equalTo(4)));
-		assertThat(String.format("Element at %1$d is called %2$s ", 0, architecture().getName()), categories.get(0).getName(), is(equalTo(architecture().getName())));
-		assertThat(String.format("Element at %1$d is called %2$s ", 1, cleanCode().getName()), categories.get(1).getName(), is(equalTo(cleanCode().getName())));
-		assertThat(String.format("Element at %1$d is called %2$s ", 2, java().getName()), categories.get(2).getName(), is(equalTo(java().getName())));
-		assertThat(String.format("Element at %1$d is called %2$s ", 3, networks().getName()), categories.get(3).getName(), is(equalTo(networks().getName())));
+		assertThat(String.format("Element at %1$d is called %2$s ", 0, architecture().getName()),
+				categories.get(0).getName(), is(equalTo(architecture().getName())));
+		assertThat(String.format("Element at %1$d is called %2$s ", 1, cleanCode().getName()),
+				categories.get(1).getName(), is(equalTo(cleanCode().getName())));
+		assertThat(String.format("Element at %1$d is called %2$s ", 2, java().getName()), categories.get(2).getName(),
+				is(equalTo(java().getName())));
+		assertThat(String.format("Element at %1$d is called %2$s ", 3, networks().getName()),
+				categories.get(3).getName(), is(equalTo(networks().getName())));
 	}
-	
+
 	@Test
 	public void alreadyExistsForAdd() {
-		
-		dBCommandTransactionalExecutor.executeCommand(()-> categoryRepository.add(java()));
+
+		dBCommandTransactionalExecutor.executeCommand(() -> categoryRepository.add(java()));
 
 		assertThat("Java should exists", categoryRepository.alreadyExists(java()), is(equalTo(true)));
 		assertThat("CleanCode should exists", categoryRepository.alreadyExists(cleanCode()), is(equalTo(false)));
-		
+
+	}
+
+	@Test
+	public void alreadyExistsCategoryWithId() {
+
+		final Category java = dBCommandTransactionalExecutor.executeCommand(() -> {
+			categoryRepository.add(cleanCode());
+			return categoryRepository.add(java());
+		});
+
+		assertThat("Shoud not be the same cause it's the same id", categoryRepository.alreadyExists(java),
+				is(equalTo(false)));
+
+		java.setName(cleanCode().getName());
+		assertThat("Should exist cause has the same code and different names, with a name that exists in the database",
+				categoryRepository.alreadyExists(java), is(equalTo(true)));
+
+		java.setName(networks().getName());
+		assertThat(
+				"Should not exist cause has the same code and different names, with a name that doesn't exists in the database",
+				categoryRepository.alreadyExists(java), is(equalTo(false)));
+
 	}
 
 	@After

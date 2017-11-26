@@ -34,9 +34,16 @@ public class CategoryRepository {
 
 	public Object alreadyExists(Category category) {
 
-		final String jpql = "Select 1 From Category e Where e.name = :name";
-		final Query query = em.createQuery(jpql);
+		final StringBuffer jpql = new StringBuffer();
+		jpql.append("Select 1 From Category e Where e.name = :name");
+		if (category.getId() != null) {
+			jpql.append(" And  e.id != :id");
+		}
+		final Query query = em.createQuery(jpql.toString());
 		query.setParameter("name", category.getName());
+		if (category.getId() != null) {
+			query.setParameter("id", category.getId());
+		}
 		int toCheck = query.setMaxResults(1).getResultList().size();
 		boolean toReturn = toCheck > 0; 
 		return toReturn;
