@@ -75,6 +75,30 @@ public class CategoryServicesUTest {
 			assertThat("Category Name should be the field that caused the exception", e.getFieldName(), is(equalTo("name")));
 		}
 	}
+	
+	private void updateCategoryWithInvalidName(String name) {
+		try {
+			categoryServices.update(new Category(name));
+			fail("An exception should have been thrown");
+		} catch (FieldNotValidException e) {
+			assertThat("Category Name should be the field that caused the exception", e.getFieldName(), is(equalTo("name")));
+		}
+	}
+	
+	@Test
+	public  void updateCategoryWithNullName() {
+		updateCategoryWithInvalidName(null);		
+	}
+	
+	@Test
+	public  void updateCategoryWithShortName() {
+		updateCategoryWithInvalidName("a");
+	}
+	
+	@Test
+	public  void updateCategoryWithLongName() {
+		updateCategoryWithInvalidName("hahauehsdslfkjsdadlkjflçkjsdskfçskddffçlkslç sdsdflçskd fçasldsjf ");
+	}
 
 	
 }

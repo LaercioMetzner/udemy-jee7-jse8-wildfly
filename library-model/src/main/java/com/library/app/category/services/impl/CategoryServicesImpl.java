@@ -11,24 +11,39 @@ import com.library.app.category.repository.CategoryRepository;
 import com.library.app.category.services.CategoryServices;
 import com.library.app.common.exception.FieldNotValidException;
 
-public class CategoryServicesImpl implements CategoryServices{
-	
+public class CategoryServicesImpl implements CategoryServices {
+
 	Validator validator;
 	CategoryRepository categoryRepository;
 
 	@Override
 	public Category add(Category category) {
-		
+
 		Set<ConstraintViolation<Category>> errors = validator.validate(category);
 		errors.stream().forEach((e) -> {
 			throw new FieldNotValidException(e.getPropertyPath().toString(), e.getMessage());
 		});
-		
+
 		if (categoryRepository.alreadyExists(category)) {
 			throw new CategoryExistentException();
 		}
-		
+
 		return categoryRepository.add(category);
+	}
+
+	@Override
+	public void update(Category category) {
+
+		Set<ConstraintViolation<Category>> errors = validator.validate(category);
+		errors.stream().forEach((e) -> {
+			throw new FieldNotValidException(e.getPropertyPath().toString(), e.getMessage());
+		});
+
+		if (categoryRepository.alreadyExists(category)) {
+			throw new CategoryExistentException();
+		}
+
+		categoryRepository.update(category);
 	}
 
 }
