@@ -6,6 +6,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import com.library.app.category.exception.CategoryExistentException;
+import com.library.app.category.exception.CategoryNotFoundException;
 import com.library.app.category.model.Category;
 import com.library.app.category.repository.CategoryRepository;
 import com.library.app.category.services.CategoryServices;
@@ -41,6 +42,10 @@ public class CategoryServicesImpl implements CategoryServices {
 
 		if (categoryRepository.alreadyExists(category)) {
 			throw new CategoryExistentException();
+		}
+
+		if (!categoryRepository.existsById(category.getId())) {
+			throw new CategoryNotFoundException();
 		}
 
 		categoryRepository.update(category);
