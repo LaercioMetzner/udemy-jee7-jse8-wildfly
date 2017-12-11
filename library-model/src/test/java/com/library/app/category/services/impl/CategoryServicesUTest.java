@@ -90,6 +90,15 @@ public class CategoryServicesUTest {
 		
 		verify(categoryRepository).update(categoryWithId(java(), 1L));
 	}
+	
+	@Test
+	public void findCategoryById() {
+		when(categoryRepository.findById(1L)).thenReturn(categoryWithId(java(), 1L));
+		final Category category = categoryServices.findById(1L);
+		assertThat("Valid category wasn't found", category, is(notNullValue()));
+		assertThat("Id should be 1L", category.getId(), is(equalTo(1L)));
+		assertThat("Category name should be Java", category.getName(), is(equalTo(java().getName())));
+	}
 
 	public void addCategoryWithInvalidName(String name) {
 		try {

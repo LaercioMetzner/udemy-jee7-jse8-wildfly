@@ -51,4 +51,9 @@ public class CategoryServicesImpl implements CategoryServices {
 		categoryRepository.update(category);
 	}
 
+	@Override
+	public Category findById(final Long id) throws CategoryNotFoundException {
+		return categoryRepository.findById(id);
+	}
+
 }

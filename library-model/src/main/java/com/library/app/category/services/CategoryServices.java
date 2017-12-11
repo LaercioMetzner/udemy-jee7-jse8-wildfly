@@ -11,4 +11,6 @@ public interface CategoryServices {
 
 	void update(Category category) throws FieldNotValidException, CategoryNotFoundException;
 
+	Category findById(Long id) throws CategoryNotFoundException;
+
 }
