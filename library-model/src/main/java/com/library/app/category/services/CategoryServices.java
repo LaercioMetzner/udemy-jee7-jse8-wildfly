@@ -1,5 +1,7 @@
 package com.library.app.category.services;
 
+import java.util.List;
+
 import com.library.app.category.exception.CategoryExistentException;
 import com.library.app.category.exception.CategoryNotFoundException;
 import com.library.app.category.model.Category;
@@ -12,5 +14,8 @@ public interface CategoryServices {
 	void update(Category category) throws FieldNotValidException, CategoryNotFoundException;
 
 	Category findById(Long id) throws CategoryNotFoundException;
+
+	List<Category> findAll();
+
 
 }

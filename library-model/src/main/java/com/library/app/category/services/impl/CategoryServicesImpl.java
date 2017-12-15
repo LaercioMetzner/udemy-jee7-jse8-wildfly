@@ -1,5 +1,6 @@
 package com.library.app.category.services.impl;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -20,6 +21,12 @@ public class CategoryServicesImpl implements CategoryServices {
 	@Override
 	public Category add(Category category) {
 
+		validateCategory(category);
+
+		return categoryRepository.add(category);
+	}
+
+	private void validateCategory(Category category) {
 		Set<ConstraintViolation<Category>> errors = validator.validate(category);
 		errors.stream().forEach((e) -> {
 			throw new FieldNotValidException(e.getPropertyPath().toString(), e.getMessage());
@@ -28,21 +35,12 @@ public class CategoryServicesImpl implements CategoryServices {
 		if (categoryRepository.alreadyExists(category)) {
 			throw new CategoryExistentException();
 		}
-
-		return categoryRepository.add(category);
 	}
 
 	@Override
 	public void update(Category category) {
 
-		Set<ConstraintViolation<Category>> errors = validator.validate(category);
-		errors.stream().forEach((e) -> {
-			throw new FieldNotValidException(e.getPropertyPath().toString(), e.getMessage());
-		});
-
-		if (categoryRepository.alreadyExists(category)) {
-			throw new CategoryExistentException();
-		}
+		validateCategory(category);
 
 		if (!categoryRepository.existsById(category.getId())) {
 			throw new CategoryNotFoundException();
@@ -58,6 +56,12 @@ public class CategoryServicesImpl implements CategoryServices {
 			throw new CategoryNotFoundException();
 		}
 		return category;
+	}
+
+	@Override
+	public List<Category> findAll() {
+		
+		return categoryRepository.findAll("name");
 	}
 
 }

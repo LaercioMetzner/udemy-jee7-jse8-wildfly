@@ -1,9 +1,18 @@
 package com.library.app.category.services.impl;
 
 import static com.library.app.commontests.category.CategoryForTestsRepository.*;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -17,6 +26,7 @@ import com.library.app.category.model.Category;
 import com.library.app.category.repository.CategoryRepository;
 import com.library.app.category.services.CategoryServices;
 import com.library.app.common.exception.FieldNotValidException;
+
 
 public class CategoryServicesUTest {
 
@@ -104,6 +114,22 @@ public class CategoryServicesUTest {
 	public void findCategoryByIdNotFound() {
 		when(categoryRepository.findById(1L)).thenReturn(null);
 		final Category category = categoryServices.findById(1L);		
+	}
+	
+	@Test
+	public void findAllNoCategories() {
+		when(categoryRepository.findAll("name")).thenReturn(new ArrayList<>());
+		List<Category> categories = categoryServices.findAll();
+		assertThat("Categories should have no elements at all", categories.isEmpty(), is(equalTo(true)));
+	}
+	
+	@Test
+	public void findAllCategories() {
+		when(categoryRepository.findAll("name")).thenReturn(Arrays.asList(categoryWithId(java(), 1L), categoryWithId(networks(), 2L)));
+		List<Category> categories = categoryServices.findAll();
+		assertThat("Categories should have two elements", categories.size(), is(equalTo(2)));
+		assertThat("First element is java", categories.get(0), is(equalTo(categoryWithId(java(), 1L))));
+		assertThat("Second element is network", categories.get(1), is(equalTo(categoryWithId(networks(), 2L))));
 	}
 
 	public void addCategoryWithInvalidName(String name) {
